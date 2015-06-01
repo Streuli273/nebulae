@@ -62,7 +62,7 @@ uint16_t* terminal_buffer;
 void terminal_initialize() {
 	terminal_row = 0;
 	terminal_column = 0;
-	terminal_color = make_color(COLOR_LIGHT_GREY, COLOR_BLACK);
+	terminal_color = make_color(COLOR_GREEN, COLOR_WHITE);
 	terminal_buffer = (uint16_t*) 0xB8000;
 	for (size_t y = 0; y < VGA_HEIGHT; y++) {
 		for (size_t x = 0; x < VGA_WIDTH; x++) {
@@ -83,6 +83,10 @@ void terminal_putentryat(char c, uint8_t color, size_t x, size_t y) {
  
 void terminal_putchar(char c) {
 	terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
+	if (c == '\n') {
+		terminal_row++;
+		terminal_column = 0;
+	}
 	if (++terminal_column == VGA_WIDTH) {
 		terminal_column = 0;
 		if (++terminal_row == VGA_HEIGHT) {
@@ -109,4 +113,8 @@ void kernel_main() {
          * This is normal.
          */
 	terminal_writestring("Hello, kernel World!\n");
+	terminal_writestring("Is this a new line?\n");
+	terminal_writestring("Yes, it is!\n");
+	terminal_writestring("\n");
+	terminal_writestring("Welcome to nebulae!");	
 }
